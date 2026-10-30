@@ -62,7 +62,7 @@ test("setup generates a private hashed configuration and updates without exposin
   assert.equal(initial.includes(password), false);
   assert.equal(output.includes(password), false);
   assert.match(initial, /OWNER_PASSWORD_HASH='[a-f0-9]{32}:[a-f0-9]{128}'/);
-  assert.equal((await stat(path.join(dir, ".env"))).mode & 0o777, 0o600);
+  if (process.platform !== 'win32') assert.equal((await stat(path.join(dir, ".env"))).mode & 0o777, 0o600);
   output = await wizard(true, [
     ["접속 URL", ""],
     ["서버 포트", ""],

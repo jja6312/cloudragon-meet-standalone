@@ -281,7 +281,7 @@ export function createApp(config, { transport } = {}) {
         res.setHeader("Set-Cookie", cookie(token, 12 * 3600));
         return send(res, 200, {
           csrf,
-          subject: sessionHash(config.login).slice(0, 32),
+          subject: store.subject,
           login: config.login,
           ...publicConfig(),
         });
@@ -294,7 +294,7 @@ export function createApp(config, { transport } = {}) {
           user
             ? {
                 csrf: user.csrf,
-                subject: sessionHash(config.login).slice(0, 32),
+                subject: store.subject,
                 login: config.login,
                 ...publicConfig(),
               }

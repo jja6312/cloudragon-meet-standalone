@@ -1,6 +1,7 @@
 import { DatabaseSync } from "node:sqlite";
 import { mkdirSync } from "node:fs";
 import path from "node:path";
+import { randomUUID } from "node:crypto";
 export function openStore(dir) {
   mkdirSync(dir, { recursive: true, mode: 0o700 });
   const db = new DatabaseSync(path.join(dir, "meet.sqlite"));
@@ -12,6 +13,9 @@ export function openStore(dir) {
     CREATE TABLE IF NOT EXISTS jobs(id TEXT PRIMARY KEY, meeting_id TEXT REFERENCES meetings(id) ON DELETE CASCADE,
       task TEXT NOT NULL, state TEXT NOT NULL, error TEXT, created INTEGER NOT NULL);
     CREATE TABLE IF NOT EXISTS budgets(day TEXT NOT NULL, kind TEXT NOT NULL, count INTEGER NOT NULL, PRIMARY KEY(day,kind));`);
+  db.exec('CREATE TABLE IF NOT EXISTS settings(key TEXT PRIMARY KEY,value TEXT NOT NULL)');
+  db.prepare('INSERT INTO settings VALUES(?,?) ON CONFLICT DO NOTHING').run('installation-id', randomUUID());
+  const subject = db.prepare('SELECT value FROM settings WHERE key=?').get('installation-id').value;
   db.prepare(
     "UPDATE jobs SET state='FAILED',error='서버가 재시작됐습니다. 다시 생성해 주세요.' WHERE state='RUNNING'",
   ).run();
@@ -35,6 +39,7 @@ export function openStore(dir) {
   };
   return {
     db,
+    subject,
     get,
     save(meeting) {
       const { chunks, aiJob, ...body } = meeting;

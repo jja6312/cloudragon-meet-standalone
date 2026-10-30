@@ -525,6 +525,7 @@ test("restart preserves meetings and resolves interrupted AI jobs as failed", as
   t.after(() => rm(dir, { recursive: true, force: true }));
   const { openStore } = await import("../server/store.mjs");
   let store = openStore(dir);
+  const originalSubject = store.subject;
   const id = randomUUID();
   store.save({
     id,
@@ -540,6 +541,7 @@ test("restart preserves meetings and resolves interrupted AI jobs as failed", as
   store.close();
   store = openStore(dir);
   try {
+    assert.equal(store.subject, originalSubject);
     assert.equal(store.get(id).title, "Restart fixture");
     assert.equal(store.get(id).aiJob.state, "FAILED");
   } finally {

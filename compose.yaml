@@ -1,0 +1,19 @@
+services:
+  meet:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      HOST: 0.0.0.0
+      PORT: 8088
+      DATA_DIR: /app/data
+    ports:
+      - "127.0.0.1:8088:8088"
+    volumes:
+      - meet-data:/app/data
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs: [/tmp]
+volumes:
+  meet-data:

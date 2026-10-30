@@ -1,0 +1,31 @@
+{
+  "name": "cloudragon-meet-standalone",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.13.1"
+  },
+  "scripts": {
+    "setup": "node scripts/setup.mjs",
+    "dev": "vite --host 127.0.0.1",
+    "dev:server": "node --env-file-if-exists=.env server/index.mjs",
+    "build": "tsc --noEmit && vite build",
+    "start": "node --env-file-if-exists=.env server/index.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "test:browser": "playwright test",
+    "check:secrets": "node scripts/check-share.mjs"
+  },
+  "dependencies": {
+    "react": "19.1.1",
+    "react-dom": "19.1.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "@types/react": "19.1.12",
+    "@types/react-dom": "19.1.9",
+    "@vitejs/plugin-react": "5.0.3",
+    "typescript": "5.9.2",
+    "vite": "7.3.7"
+  }
+}
